@@ -15,6 +15,7 @@ drfpasswordless = "*"
 requests = "*"
 gradio-client = "*"
 transformers = "*"
+chronos = {git = "git+https://github.com/amazon-science/chronos-forecasting.git"}
 
 [dev-packages]
 
