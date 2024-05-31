@@ -15,25 +15,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-sm-4 height">
-            <div class="chat_message">
-                <div class="list_title">
-                    <div>Диалоги</div>
-                </div>
-                <div class="list_messages">
-                    <div v-for="(dial, index) in dialog" :key='index' v-if="lines" class="item"
-                        @click="Item_get(dial.id)">
-
-                        <div>{{ dial.title }}</div>
-                        <div v-if="dial.regulations_complies"><img src="../assets/yes.png" alt="yes" width="30px"
-                                height="30px"></div>
-                        <div v-else><img src="../assets/no.png" alt="yes" width="30px" height="30px"></div>
-                    </div>
-                </div>
-            </div>
-
-        </div>
-        <div class="col-sm-6 height">
+        <div class="col-sm-10 height">
             <div class="result">
                 <div class="stat_title">Результат</div>
                 <div class="stat_item">Качество переговоров - <b>{{ this.sr_count }} %</b></div>
@@ -41,6 +23,15 @@
                 <div class="stat_item">Качество переговоров без нарушений - <b>{{ this.count_accept }}</b></div>
                 <div class="grafic">
                     <canvas id="myChart"></canvas>
+                </div>
+                <div class="grafic">
+                    <canvas id="myChart2"></canvas>
+                </div>
+                <div class="grafic">
+                    <canvas id="myChart3"></canvas>
+                </div>
+                <div class="grafic">
+                    <canvas id="myChart4"></canvas>
                 </div>
             </div>
         </div>
@@ -55,11 +46,12 @@ import Chart from 'chart.js/auto';
 export default {
     data() {
         return {
-            lines: null,
-            dialog: null,
-            count_accept: 0,
-            count_not_accept: 0,
-            sr_count: 0,
+            count: null,
+            error_: null,
+            not_error_: null,
+            date: {
+
+            }
         }
     },
     setup() {
@@ -76,22 +68,35 @@ export default {
         }
     },
     mounted() {
-        axios.get(this.$globalUrl + 'api/negotiations/' + this.route.params.category_id).then(response => {
+        axios.get(this.$globalUrl + 'api/regions/' + this.route.params.category_id + "/").then(response => {
             this.dialog = response.data;
-            for (let i = 0; i < this.dialog.length; i++) {
-                if (this.dialog[i].regulations_complies) {
-                    this.count_accept = this.count_accept + 1;
-                } else {
-                    this.count_not_accept = this.count_not_accept + 1;
-                };
-                this.sr_count = this.sr_count + this.dialog[i].percentage_compliance;
-            };
-            this.sr_count = (this.count_accept * 100 / this.dialog.length).toFixed(1);
-        }),
-            axios.get(this.$globalUrl + 'api/lines/').then(response => {
-                this.lines = response.data;
+            for (let i = 0; i < response.data.subdivisions.length; i++) {
+                for (let j = 0; j < response.data.subdivisions[i].vehicles.length; j++) {
+                    for (let k = 0; k < response.data.subdivisions[i].vehicles[j].trips.length; k++) {
+                        if (response.data.subdivisions[i].vehicles[j].trips[k].trip_mileage == response.data.subdivisions[i].vehicles[j].trips[k].telematics_mileage) {
+                            this.not_error_ += 1;
 
-            }),
+                        } else {
+                            this.error_ += 1;
+                            if (response.data.subdivisions[i].vehicles[j].trips[k].trip_date in this.date) {
+                                let s =
+                                    this.date[response.data.subdivisions[i].vehicles[j].trips[k].trip_date] += 1;
+                            } else {
+                                console.log(response.data.subdivisions[i].vehicles[j].trips[k].trip_date)
+                                this.date[response.data.subdivisions[i].vehicles[j].trips[k].trip_date] = 1;
+                            }
+                        }
+
+
+
+                    }
+                }
+
+            }
+            console.log(Object.keys(this.date), Object.values(this.date))
+
+        }),
+
             setTimeout(() => {
 
                 new Chart(document.getElementById('myChart'), {
@@ -101,7 +106,7 @@ export default {
                         datasets: [{
                             label: "Единиц",
                             backgroundColor: ["#FF3300", "#339966"],
-                            data: [this.count_not_accept, this.count_accept]
+                            data: [this.error_, this.not_error_]
                         }]
                     },
                     options: {
@@ -112,9 +117,79 @@ export default {
                         responsive: true,
 
                     }
-                })
+                }),
+                    new Chart(document.getElementById('myChart2'), {
+                        type: 'radar',
+                        data: {
+                            labels: [
+                                'Eating',
+                                'Drinking',
+                                'Drinkin2g',
+                            ],
+                            datasets: [{
+                                label: 'My First Dataset',
+                                data: [65, 59, 90],
+                                fill: true,
+                                backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                                borderColor: 'rgb(255, 99, 132)',
+                                pointBackgroundColor: 'rgb(255, 99, 132)',
+                                pointBorderColor: '#fff',
+                                pointHoverBackgroundColor: '#fff',
+                                pointHoverBorderColor: 'rgb(255, 99, 132)'
+                            }, {
+                                label: 'My Second Dataset',
+                                data: [28, 48, 40],
+                                fill: true,
+                                backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                                borderColor: 'rgb(54, 162, 235)',
+                                pointBackgroundColor: 'rgb(54, 162, 235)',
+                                pointBorderColor: '#fff',
+                                pointHoverBackgroundColor: '#fff',
+                                pointHoverBorderColor: 'rgb(54, 162, 235)'
+                            }]
+
+                        },
+                        options: {
+                            title: {
+                                display: true,
+                                text: 'Predicted world population (millions) in 2050'
+                            },
+                            responsive: true,
+
+                        }
+                    }),
+                    new Chart(document.getElementById('myChart3'), {
+                        type: 'line',
+                        data: {
+                            labels: Object.keys(this.date),
+                            datasets: [{
+                                label: 'My First Dataset',
+                                data: Object.values(this.date),
+                                fill: false,
+                                borderColor: 'rgb(75, 192, 192)',
+                                tension: 0.1
+                            }]
+
+                        },
+
+                    }),
+                    new Chart(document.getElementById('myChart4'), {
+                        type: 'scatter',
+                        data: {
+                            labels: Object.keys(this.date),
+                            datasets: [{
+                                type: 'bar',
+                                label: 'Bar Dataset',
+                                data: Object.values(this.date),
+                                borderColor: 'rgb(255, 99, 132)',
+                                backgroundColor: 'rgba(255, 99, 132, 0.2)'
+                            }]
+
+                        },
+
+                    })
             }, 1000);
-        console.log(this.count_accept);
+
     },
 
 }
