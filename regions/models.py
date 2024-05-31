@@ -1,4 +1,5 @@
 from django.db import models
+import decimal
 
 class Region(models.Model):
     REGION_CHOICES = [
@@ -125,10 +126,34 @@ class Subdivision(models.Model):
         verbose_name = 'Структурное подразделение'
         verbose_name_plural = 'Структурные подразделения'
     
+    # @property
+    # def vehicles_count(self):
+    #     vehicles = self.vehicles.all()
+    #     return len(vehicles)
+
     @property
-    def vehicles_count(self):
+    def rating(self):
         vehicles = self.vehicles.all()
-        return len(vehicles)
+        for vehicle in vehicles:
+            trips = vehicle.trips.all()
+            for trip in trips:
+                try:
+                    mid = trip.trip_mileage/trip.telematics_mileage
+                    if mid>1:
+                        mid = trip.telematics_mileage/trip.trip_mileage
+                except (decimal.DivisionByZero, decimal.InvalidOperation):
+                    mid=0
+                if mid==1:
+                    trip_k=1
+                elif 1-mid<0.05:
+                    trip_k=0.2
+                elif 1-mid<0.1:
+                    trip_k=0.3
+                else:
+                    trip_k=0.4
+                
+
+        return float(vehicle.all_telematics_mileage) * trip_k
 
 class Vehicle(models.Model):
     number = models.CharField(
@@ -150,7 +175,13 @@ class Vehicle(models.Model):
     all_telematics_mileage = models.DecimalField(
         max_digits=10,
         decimal_places=2,
-        verbose_name='Данные телематики, пробег')
+        verbose_name='Пробег по путевым листам')
+    all_true_telematics_mileage = models.DecimalField(
+        max_digits=10,
+        decimal_places=2,
+        blank=True,
+        null=True,
+        verbose_name='Пробег по телеметрике')
     in_structure = models.BooleanField(
         default=False,
         verbose_name='В структуре парка'
