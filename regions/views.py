@@ -30,6 +30,7 @@ class TripMileageForecast(APIView):
         vehicle = get_object_or_404(Vehicle, pk=vehicle_id)
         trips = Trip.objects.filter(vehicle_id=vehicle_id).order_by('trip_date')
         serializer = TripSerializer(trips, many=True)
+        
         if len(trips)==0:
             return Response(trips, status=status.HTTP_404_NOT_FOUND)
         
@@ -46,49 +47,53 @@ class TripMileageForecast(APIView):
         order = (1, 1, 1)
         df['trip_mileage'] = pd.to_numeric(df["trip_mileage"])
         print(df['trip_mileage'])
-        # Создание и обучение модели
-        model = SARIMAX(df['trip_mileage'], order=order)
-        model_fit = model.fit(disp=False)
-        
-        # Прогнозирование на следующие 5 периодов
-        forecast_steps = 5
-        forecast = model_fit.get_forecast(steps=forecast_steps)
-        
-        # Формирование индекса для прогнозируемых значений
-        forecast_index = pd.date_range(start=df.index[-1] + pd.Timedelta(days=1), periods=forecast_steps, freq='D')
-        forecast_series = pd.Series(forecast.predicted_mean.values, index=forecast_index)
-        
-        # Построение графика прогнозируемых значений
-        plt.figure(figsize=(12, 6))
-        plt.plot(df['trip_mileage'], label='Наблюдаемые значения')
-        plt.plot(forecast_series, label='Прогноз', linestyle='--', color='red')
-        plt.xlabel('Дата', fontsize=12)
-        plt.ylabel('Пробег, км', fontsize=12)
-        plt.title('Прогноз пробега транспортных средств', fontsize=14)
-        plt.legend(fontsize=12)
-        plt.grid(True)
-        
-        # # Сохранение графика в буфер
-        # buffer = BytesIO()
-        # plt.savefig(buffer, format='png')
-        # buffer.seek(0)
-        # image_png = buffer.getvalue()
-        # buffer.close()
-        # image_base64 = base64.b64encode(image_png).decode('utf-8')
-        # Сохранение графика
-        image_path = os.path.join(settings.MEDIA_ROOT, 'forecast_plot.png')
-        plt.savefig(image_path, format='png')
-        plt.close()
+        try:
+            # Создание и обучение модели
+            model = SARIMAX(df['trip_mileage'], order=order)
+            model_fit = model.fit(disp=False)
+            
+            # Прогнозирование на следующие 5 периодов
+            forecast_steps = 5
+            forecast = model_fit.get_forecast(steps=forecast_steps)
+            
+            # Формирование индекса для прогнозируемых значений
+            forecast_index = pd.date_range(start=df.index[-1] + pd.Timedelta(days=1), periods=forecast_steps, freq='D')
+            forecast_series = pd.Series(forecast.predicted_mean.values, index=forecast_index)
+            
+            # Построение графика прогнозируемых значений
+            plt.figure(figsize=(12, 6))
+            plt.plot(df['trip_mileage'], label='Наблюдаемые значения')
+            plt.plot(forecast_series, label='Прогноз', linestyle='--', color='red')
+            plt.xlabel('Дата', fontsize=12)
+            plt.ylabel('Пробег, км', fontsize=12)
+            plt.title('Прогноз пробега транспортных средств', fontsize=14)
+            plt.legend(fontsize=12)
+            plt.grid(True)
+            
+            # # Сохранение графика в буфер
+            # buffer = BytesIO()
+            # plt.savefig(buffer, format='png')
+            # buffer.seek(0)
+            # image_png = buffer.getvalue()
+            # buffer.close()
+            # image_base64 = base64.b64encode(image_png).decode('utf-8')
+            # Сохранение графика
+            image_path = os.path.join(settings.MEDIA_ROOT, f'forecast_plot_{vehicle_id}.png')
+            plt.savefig(image_path, format='png')
+            plt.close()
 
-        # Формирование URL для изображения
-        image_url = os.path.join(settings.MEDIA_URL, 'forecast_plot.png')
+            # Формирование URL для изображения
+            image_url = os.path.join(settings.MEDIA_URL, f'forecast_plot_{vehicle_id}.png')
 
-        # Подготовка данных для ответа
-        response_data = {
-            # "observed_values": df['trip_mileage'].to_dict(),
-            # "forecast_values": forecast_series.to_dict(),
-            # "forecast_plot": image_base64
-            "forecast_plot_url": request.build_absolute_uri(image_url)
-        }
+            # Подготовка данных для ответа
+            response_data = {
+                # "observed_values": df['trip_mileage'].to_dict(),
+                # "forecast_values": forecast_series.to_dict(),
+                # "forecast_plot": image_base64
+                "forecast_plot_url": request.build_absolute_uri(image_url)
+            }
 
-        return Response(response_data, status=status.HTTP_200_OK)
+            return Response(response_data, status=status.HTTP_200_OK)
+
+        except IndexError:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
