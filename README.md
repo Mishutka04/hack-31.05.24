@@ -147,6 +147,8 @@ python manage.py migrate
 Наполняем БД
 ```sh
 python manage.py create_regions
+python manage.py import_data_vehicle dataset.xlsx
+python manage.py import_data_trips dataset.xlsx
 ```
 
 Запускает dev-сервер
