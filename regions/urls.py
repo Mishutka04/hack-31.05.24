@@ -2,6 +2,7 @@ from django.urls import path
 from .views import RegionListView, RegionDetailView
 
 
+app_name="regions"
 urlpatterns = [
     path(
         'regions/',

@@ -144,6 +144,11 @@ pipenv shell
 python manage.py migrate
 ```
 
+Наполняем БД
+```sh
+python manage.py create_regions
+```
+
 Запускает dev-сервер
 ```sh
 python manage.py runserver

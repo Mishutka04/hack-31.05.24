@@ -91,3 +91,114 @@ class Region(models.Model):
 
     def __str__(self):
         return self.name
+    
+    class Meta:
+        verbose_name = 'Регион'
+        verbose_name_plural = 'Регионы'
+
+
+class Subdivision(models.Model):
+    name = models.CharField(
+        max_length=255,
+        # unique=True,
+        verbose_name='Наименование структурного подразделения')
+    region = models.ForeignKey(
+        Region, on_delete=models.CASCADE,
+        related_name='subdivisions',
+        verbose_name='Регион')
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        verbose_name = 'Структурное подразделение'
+        verbose_name_plural = 'Структурные подразделения'
+
+class Vehicle(models.Model):
+    number = models.CharField(
+        max_length=50,
+        verbose_name='Номерной знак ТС')
+    subdivision = models.ForeignKey(
+        Subdivision,
+        on_delete=models.CASCADE,
+        related_name='vehicles',
+        verbose_name='Структурное подразделение')
+    driving_style = models.DecimalField(
+        max_digits=4,
+        decimal_places=2,
+        default=0,
+        verbose_name='Манера вождения')
+    all_fines = models.IntegerField(
+        default=0,
+        verbose_name='Штрафы')
+    all_telematics_mileage = models.DecimalField(
+        max_digits=10,
+        decimal_places=2,
+        verbose_name='Данные телематики, пробег')
+
+    def __str__(self):
+        return self.number
+
+    class Meta:
+        verbose_name = 'Транспортное средство'
+        verbose_name_plural = 'Транспортные средства'
+
+# class Trip(models.Model):
+#     polygon_name = models.CharField(
+#         max_length=255,
+#         verbose_name='Наименование полигона')
+#     short_name = models.CharField(
+#         max_length=255,
+#         verbose_name='Краткое наименование')
+#     polygon = models.CharField(
+#         max_length=255,
+#         verbose_name='Полигон')
+#     vehicle = models.ForeignKey(
+#         Vehicle,
+#         on_delete=models.CASCADE,
+#         related_name='trips',
+#         verbose_name='Транспортное средство')
+#     trip_date = models.DateField(
+#         blank=True,
+#         null=True,
+#         verbose_name='Дата путевого листа')
+#     trip_mileage = models.DecimalField(
+#         max_digits=10,
+#         decimal_places=2,
+#         default=0,
+#         verbose_name='Данные путевых листов, пробег')
+#     fines = models.IntegerField(
+#         default=0,
+#         verbose_name='Штрафы')
+#     driving_style = models.DecimalField(
+#         max_digits=4,
+#         decimal_places=2,
+#         default=0,
+#         verbose_name='Манера вождения')
+
+#     def __str__(self):
+#         return f'{self.polygon_name} - {self.vehicle.number}'
+
+#     class Meta:
+#         verbose_name = 'Путевой лист'
+#         verbose_name_plural = 'Путевые листы'
+
+# class Telematics(models.Model):
+#     trip = models.ForeignKey(
+#         Trip,
+#         on_delete=models.CASCADE,
+#         related_name='telematics',
+#         verbose_name='Путевой лист')
+#     telematics_date = models.DateField(
+#         verbose_name='Дата сигнала телематики')
+#     telematics_mileage = models.DecimalField(
+#         max_digits=10,
+#         decimal_places=2,
+#         verbose_name='Данные телематики, пробег')
+
+#     def __str__(self):
+#         return f'{self.trip} - {self.telematics_date}'
+
+#     class Meta:
+#         verbose_name = 'Телематика'
+#         verbose_name_plural = 'Телематика'

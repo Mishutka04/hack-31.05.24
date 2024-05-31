@@ -16,6 +16,8 @@ requests = "*"
 gradio-client = "*"
 transformers = "*"
 chronos = {git = "git+https://github.com/amazon-science/chronos-forecasting.git"}
+pandas = "*"
+openpyxl = "*"
 
 [dev-packages]
 
