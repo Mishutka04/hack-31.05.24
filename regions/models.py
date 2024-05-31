@@ -95,6 +95,17 @@ class Region(models.Model):
     class Meta:
         verbose_name = 'Регион'
         verbose_name_plural = 'Регионы'
+    
+    @property
+    def vehicles_count(self):
+        vehicles = 0
+        subdivisions = self.subdivisions.all()
+        for sub in subdivisions:
+            vehicles+=len(sub.vehicles.all())
+        # for product in products:
+        #     sum_try = sum_try + sum(
+        #         [purchase.price_try for purchase in product.purchases.all()])
+        return vehicles
 
 
 class Subdivision(models.Model):
@@ -113,6 +124,11 @@ class Subdivision(models.Model):
     class Meta:
         verbose_name = 'Структурное подразделение'
         verbose_name_plural = 'Структурные подразделения'
+    
+    @property
+    def vehicles_count(self):
+        vehicles = self.vehicles.all()
+        return len(vehicles)
 
 class Vehicle(models.Model):
     number = models.CharField(
@@ -135,6 +151,10 @@ class Vehicle(models.Model):
         max_digits=10,
         decimal_places=2,
         verbose_name='Данные телематики, пробег')
+    in_structure = models.BooleanField(
+        default=False,
+        verbose_name='В структуре парка'
+        )
 
     def __str__(self):
         return self.number
@@ -143,62 +163,33 @@ class Vehicle(models.Model):
         verbose_name = 'Транспортное средство'
         verbose_name_plural = 'Транспортные средства'
 
-# class Trip(models.Model):
-#     polygon_name = models.CharField(
-#         max_length=255,
-#         verbose_name='Наименование полигона')
-#     short_name = models.CharField(
-#         max_length=255,
-#         verbose_name='Краткое наименование')
-#     polygon = models.CharField(
-#         max_length=255,
-#         verbose_name='Полигон')
-#     vehicle = models.ForeignKey(
-#         Vehicle,
-#         on_delete=models.CASCADE,
-#         related_name='trips',
-#         verbose_name='Транспортное средство')
-#     trip_date = models.DateField(
-#         blank=True,
-#         null=True,
-#         verbose_name='Дата путевого листа')
-#     trip_mileage = models.DecimalField(
-#         max_digits=10,
-#         decimal_places=2,
-#         default=0,
-#         verbose_name='Данные путевых листов, пробег')
-#     fines = models.IntegerField(
-#         default=0,
-#         verbose_name='Штрафы')
-#     driving_style = models.DecimalField(
-#         max_digits=4,
-#         decimal_places=2,
-#         default=0,
-#         verbose_name='Манера вождения')
+class Trip(models.Model):
+    vehicle = models.ForeignKey(
+        Vehicle,
+        on_delete=models.CASCADE,
+        related_name='trips',
+        verbose_name='Транспортное средство')
+    trip_date = models.DateField(
+        blank=True,
+        null=True,
+        verbose_name='Дата путевого листа')
+    trip_mileage = models.DecimalField(
+        max_digits=10,
+        decimal_places=2,
+        default=0,
+        verbose_name='Данные путевых листов, пробег')
+    telematics_date = models.DateField(
+        blank=True,
+        null=True,
+        verbose_name='Дата сигнала телематики')
+    telematics_mileage = models.DecimalField(
+        max_digits=10,
+        decimal_places=2,
+        verbose_name='Данные телематики, пробег')
 
-#     def __str__(self):
-#         return f'{self.polygon_name} - {self.vehicle.number}'
+    def __str__(self):
+        return f'{self.vehicle.number}'
 
-#     class Meta:
-#         verbose_name = 'Путевой лист'
-#         verbose_name_plural = 'Путевые листы'
-
-# class Telematics(models.Model):
-#     trip = models.ForeignKey(
-#         Trip,
-#         on_delete=models.CASCADE,
-#         related_name='telematics',
-#         verbose_name='Путевой лист')
-#     telematics_date = models.DateField(
-#         verbose_name='Дата сигнала телематики')
-#     telematics_mileage = models.DecimalField(
-#         max_digits=10,
-#         decimal_places=2,
-#         verbose_name='Данные телематики, пробег')
-
-#     def __str__(self):
-#         return f'{self.trip} - {self.telematics_date}'
-
-#     class Meta:
-#         verbose_name = 'Телематика'
-#         verbose_name_plural = 'Телематика'
+    class Meta:
+        verbose_name = 'Путевой лист'
+        verbose_name_plural = 'Путевые листы'
