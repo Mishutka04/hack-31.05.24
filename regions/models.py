@@ -126,34 +126,74 @@ class Subdivision(models.Model):
         verbose_name = 'Структурное подразделение'
         verbose_name_plural = 'Структурные подразделения'
     
-    # @property
-    # def vehicles_count(self):
-    #     vehicles = self.vehicles.all()
-    #     return len(vehicles)
+    def get_raiting(self, mid):
+        if 1-mid<0.05:
+            k=0.2
+        elif 1-mid<0.1:
+            k=0.3
+        else:
+            k=0.4
+        return k
+    
+    def get_raiting_fines(self, mid):
+        if mid==0:
+            k=1
+        elif mid<0.05:
+            k=0.1
+        elif mid<0.15:
+            k=0.2
+        else:
+            k=0.3
+        return k
+    
+    def get_raiting_drive(self, mid):
+        med_per = 100 - float(mid)/0.06
+        # print(med_per)
+        if mid==0:
+            k=0
+        elif med_per<10:
+            k=0.1
+        elif mid<15:
+            k=0.2
+        else:
+            k=0.3
+        return k
 
     @property
     def rating(self):
         vehicles = self.vehicles.all()
+        true_trip=0
+        tele_trip=0
+        vehicle_in_structure=0
+        count_fines=0
+        driving_rate=0
         for vehicle in vehicles:
-            trips = vehicle.trips.all()
-            for trip in trips:
-                try:
-                    mid = trip.trip_mileage/trip.telematics_mileage
-                    if mid>1:
-                        mid = trip.telematics_mileage/trip.trip_mileage
-                except (decimal.DivisionByZero, decimal.InvalidOperation):
-                    mid=0
-                if mid==1:
-                    trip_k=1
-                elif 1-mid<0.05:
-                    trip_k=0.2
-                elif 1-mid<0.1:
-                    trip_k=0.3
-                else:
-                    trip_k=0.4
-                
+            true_trip+=vehicle.all_telematics_mileage
+            tele_trip+=vehicle.all_true_telematics_mileage
+            count_fines+=vehicle.all_fines
+            driving_rate+=vehicle.driving_style
+            if vehicle.in_structure is True:
+                vehicle_in_structure+=1
 
-        return float(vehicle.all_telematics_mileage) * trip_k
+        try:
+            trip_mid = true_trip/tele_trip
+            if trip_mid>1:
+                trip_mid = tele_trip/true_trip
+        except (decimal.DivisionByZero, decimal.InvalidOperation):
+            trip_mid=0
+        trip_k = self.get_raiting(trip_mid)
+
+        structure_mid=vehicle_in_structure/len(vehicles)
+        structure_k = self.get_raiting(structure_mid)
+        
+        fines_mid=len(vehicles)/count_fines
+        fines_k=self.get_raiting_fines(fines_mid)
+        
+        driving_mid=driving_rate/len(vehicles)
+        driving_k=self.get_raiting_drive(driving_mid)
+
+        # print(str(trip_k) + "_" + str(structure_k) + "_" + str(fines_k) + "_" + str(driving_k))
+        return str(trip_k) + "_" + str(structure_k) + "_" + str(fines_k) + "_" + str(driving_k)
 
 class Vehicle(models.Model):
     number = models.CharField(
