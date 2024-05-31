@@ -193,7 +193,12 @@ class Subdivision(models.Model):
         driving_k=self.get_raiting_drive(driving_mid)
 
         # print(str(trip_k) + "_" + str(structure_k) + "_" + str(fines_k) + "_" + str(driving_k))
-        return str(trip_k) + "_" + str(structure_k) + "_" + str(fines_k) + "_" + str(driving_k)
+        
+        # Р = П*0,4 + Ц*0,3 + Ш*0,15 + МВ*0,15
+        main_rate = (0.4 * trip_k + 0.3 * structure_k + 0.15 * fines_k + 0.15 * driving_k )* 100
+        # main_rate_pircents = round(main_rate, 4) * 100
+        print("Рейтинг эффективности использования транспортных средств составляет - " + str(main_rate)[:5] + " %" )
+        return "Рейтинг эффективности использования транспортных средств составляет - " + str(main_rate)[:5] + " %" 
 
 class Vehicle(models.Model):
     number = models.CharField(
