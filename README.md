@@ -149,6 +149,7 @@ python manage.py migrate
 python manage.py create_regions
 python manage.py import_data_vehicle dataset.xlsx
 python manage.py import_data_trips dataset.xlsx
+python manage.py vehicle_updates dataset.xlsx
 ```
 
 Запускает dev-сервер

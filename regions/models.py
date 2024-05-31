@@ -95,6 +95,17 @@ class Region(models.Model):
     class Meta:
         verbose_name = 'Регион'
         verbose_name_plural = 'Регионы'
+    
+    @property
+    def vehicles_count(self):
+        vehicles = 0
+        subdivisions = self.subdivisions.all()
+        for sub in subdivisions:
+            vehicles+=len(sub.vehicles.all())
+        # for product in products:
+        #     sum_try = sum_try + sum(
+        #         [purchase.price_try for purchase in product.purchases.all()])
+        return vehicles
 
 
 class Subdivision(models.Model):
@@ -113,6 +124,11 @@ class Subdivision(models.Model):
     class Meta:
         verbose_name = 'Структурное подразделение'
         verbose_name_plural = 'Структурные подразделения'
+    
+    @property
+    def vehicles_count(self):
+        vehicles = self.vehicles.all()
+        return len(vehicles)
 
 class Vehicle(models.Model):
     number = models.CharField(
@@ -135,6 +151,10 @@ class Vehicle(models.Model):
         max_digits=10,
         decimal_places=2,
         verbose_name='Данные телематики, пробег')
+    in_structure = models.BooleanField(
+        default=False,
+        verbose_name='В структуре парка'
+        )
 
     def __str__(self):
         return self.number
