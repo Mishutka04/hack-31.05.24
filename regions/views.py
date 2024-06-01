@@ -7,8 +7,8 @@ from rest_framework import status
 from .models import Trip, Vehicle
 from .serializers import TripSerializer
 import pandas as pd
-from statsmodels.tsa.statespace.sarimax import SARIMAX
-import matplotlib.pyplot as plt
+#from statsmodels.tsa.statespace.sarimax import SARIMAX
+#import matplotlib.pyplot as plt
 from io import BytesIO
 import base64
 import os

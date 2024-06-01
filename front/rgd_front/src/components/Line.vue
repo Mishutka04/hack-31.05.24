@@ -1,6 +1,6 @@
 <template>
-    <div class="row">
-        <div class="col-sm-2 height">
+    <div class="row height">
+        <div class="col-sm-2">
             <div class="item_list">
                 <div class="list_title">
                     <div>Структурные подразделения</div>
@@ -16,37 +16,106 @@
             </div>
         </div>
         <div class="col-sm-10 height">
-            <div class="result">
-                <div class="stat_title">Результат</div>
-                <div class="stat_item">Количество машин в структуре - <b>{{ sum_car(Object.values(this.in_structure))
-                        }}</b></div>
-                <div>
-                    <div v-for="(sub, index) in in_structure" :key='index'>
-                        <div class="stat_item"><b>{{ index }}</b> - {{ sub }}</div>
+            <div class="row">
+                <div class="col stat_block left">
+                    <div class="stat_block_up">Количество машин в структуре</div>
+                    <div class="stat_block_down">
+                        <div class="image"><img src="../assets/graph.svg" alt="" width="100px" height="50px"></div>
+                        <div class="stat_block_item">
+                            <div class="text">{{ sum_car(Object.values(this.in_structure)) }}</div>
+                        </div>
                     </div>
                 </div>
-
-                <div class="stat_item">Количество машин не эксплуатируемых - <b>{{ this.error_exploitation }}</b></div>
-                <div class="stat_item">Нарушений в дате - <b>{{ this.error_date }}</b></div>
-                <div class="grafic">
-                    <canvas id="myChart"></canvas>
+                <div class="col stat_block center">
+                    <div class="stat_block_up">Количество машин не эксплуатируемых</div>
+                    <div class="stat_block_down">
+                        <div class="image"><img src="../assets/graph.svg" alt="" width="100px" height="50px"></div>
+                        <div class="stat_block_item">
+                            <div class="text">{{ this.error_exploitation }}</div>
+                        </div>
+                    </div>
                 </div>
-                <div class="grafic">
-                    <canvas id="myChart2"></canvas>
+                <div class="col stat_block center">
+                    <div class="stat_block_up">Нарушений в листах по датам</div>
+                    <div class="stat_block_down">
+                        <div class="image"><img src="../assets/graph.svg" alt="" width="100px" height="50px"></div>
+                        <div class="stat_block_item">
+                            <div class="text">{{ this.error_date }}</div>
+                        </div>
+                    </div>
                 </div>
-                <div class="grafic">
-                    <canvas id="myChart3"></canvas>
-                </div>
-                <div class="grafic">
-                    <canvas id="myChart4"></canvas>
-                </div>
-                <div class="grafic">
-                    <canvas id="myChart5"></canvas>
-                </div>
-                <div class="grafic">
-                    <canvas id="myChart6"></canvas>
+                <div class="col stat_block right">
+                    <div class="stat_block_up">Название</div>
+                    <div class="stat_block_down">
+                        <div class="image"><img src="../assets/graph.svg" alt="" width="100px" height="50px"></div>
+                        <div class="stat_block_item">
+                            <div class="text">10 %</div>
+                        </div>
+                    </div>
                 </div>
             </div>
+            <div class="row">
+                <div class="col-4 ">
+                    <div class="division_block">
+                        <div class="division_title">Эффективность регионов</div>
+                        <div class="line"></div>
+                        <div class="division_element">
+                            <div class="image">
+                                <img src="../assets/graph.svg" alt="" width="100px" height="50px">
+                                <div class="regions">Приморье</div>
+                            </div>
+                            <div class="division_element_text">Эффертивность 10%</div>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="col-8">
+                    <div class="row graf_block">
+                        <div class="col graf_block_left">
+                            <div class="graf_block_title">График эффективности подразделений</div>
+                            <div class="line"></div>
+                            <div class="grafic">
+                                <canvas id="myChart5"></canvas>
+                            </div>
+                        </div>
+                        <div class="col graf_block_right">
+                            <div class="graf_block_title">График количества нарушений подразделений</div>
+                            <div class="line"></div>
+                            <div class="grafic">
+                                <canvas id="myChart6"></canvas>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            <div class="row div_block">
+                <div class="col row_margin_top">
+                    <div class="row graf_block">
+                        <div class="col">
+                            <div class="graf_block_left">
+                                <div class="graf_block_title">Анализ структурного подразделения с рекомендациями</div>
+                                <div class="line"></div>
+                                <div class="grafic">
+                                    <canvas id="myChart4ы"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col ">
+                            <div class="graf_block_right">
+                                <div class="graf_block_title">График количества нарушений подразделений</div>
+                                <div class="line"></div>
+                                <div class="grafic">
+                                    <canvas id="myChart3"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            
         </div>
     </div>
 </template>
@@ -161,65 +230,7 @@ export default {
             setTimeout(() => {
 
 
-                new Chart(document.getElementById('myChart'), {
-                    type: 'pie',
-                    data: {
-                        labels: ["Нарушения", "Без нарушений"],
-                        datasets: [{
-                            label: "Единиц",
-                            backgroundColor: ["#FF3300", "#339966"],
-                            data: [this.error_, this.not_error_]
-                        }]
-                    },
-                    options: {
-                        title: {
-                            display: true,
-                            text: 'Predicted world population (millions) in 2050'
-                        },
-                        responsive: true,
-
-                    }
-                }),
-                    new Chart(document.getElementById('myChart2'), {
-                        type: 'radar',
-                        data: {
-                            labels: [
-                                'Eating',
-                                'Drinking',
-                                'Drinkin2g',
-                            ],
-                            datasets: [{
-                                label: 'My First Dataset',
-                                data: [65, 59, 90],
-                                fill: true,
-                                backgroundColor: 'rgba(255, 99, 132, 0.2)',
-                                borderColor: 'rgb(255, 99, 132)',
-                                pointBackgroundColor: 'rgb(255, 99, 132)',
-                                pointBorderColor: '#fff',
-                                pointHoverBackgroundColor: '#fff',
-                                pointHoverBorderColor: 'rgb(255, 99, 132)'
-                            }, {
-                                label: 'My Second Dataset',
-                                data: [28, 48, 40],
-                                fill: true,
-                                backgroundColor: 'rgba(54, 162, 235, 0.2)',
-                                borderColor: 'rgb(54, 162, 235)',
-                                pointBackgroundColor: 'rgb(54, 162, 235)',
-                                pointBorderColor: '#fff',
-                                pointHoverBackgroundColor: '#fff',
-                                pointHoverBorderColor: 'rgb(54, 162, 235)'
-                            }]
-
-                        },
-                        options: {
-                            title: {
-                                display: true,
-                                text: 'Predicted world population (millions) in 2050'
-                            },
-                            responsive: true,
-
-                        }
-                    }),
+                
                     new Chart(document.getElementById('myChart3'), {
                         type: 'line',
                         data: {
@@ -257,7 +268,13 @@ export default {
                             datasets: [{
                                 label: 'Качество в %',
                                 data: Object.values(this.subdivisions),
-
+                                backgroundColor: [
+                                    'rgb(255, 99, 132)',
+                                    'rgb(75, 192, 192)',
+                                    'rgb(255, 205, 86)',
+                                    'rgb(201, 203, 207)',
+                                    'rgb(54, 162, 235)'
+                                ]
                             }]
 
                         },
@@ -270,7 +287,13 @@ export default {
                             datasets: [{
                                 label: 'Количество нарушений',
                                 data: Object.values(this.error_subdivisions),
-
+                                backgroundColor: [
+                                    'rgb(255, 99, 132)',
+                                    'rgb(75, 192, 192)',
+                                    'rgb(255, 205, 86)',
+                                    'rgb(201, 203, 207)',
+                                    'rgb(54, 162, 235)'
+                                ]
                             }]
 
                         },

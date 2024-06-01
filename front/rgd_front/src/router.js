@@ -7,7 +7,7 @@ import Google from './components/Google.vue';
 export default createRouter({
     history: createWebHashHistory(),
     routes: [
-        {name: 'base', path: '', component: Base},
+        {name: 'base', path: '', component: Google},
         {name: 'line', path: '/route/:category_id/', component: Line},
         {name: 'google', path: '/google/', component: Google},
         
