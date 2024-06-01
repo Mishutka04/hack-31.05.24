@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import RegionListView, RegionDetailView, TripMileageForecast
+from .views import RegionListView, RegionDetailView, TripMileageForecast, SubdivisionDetailView
 
 
 app_name="regions"
@@ -15,4 +15,7 @@ urlpatterns = [
         'forecast_trip/<int:vehicle_id>/',
         TripMileageForecast.as_view(),
         name='trip-mileage-forecast'),
+    path('subdivision/<str:pk>/',
+         SubdivisionDetailView.as_view(),
+         name='subdivision-detail'),
 ]

@@ -1,10 +1,10 @@
 from rest_framework import generics
 from .models import Region
-from .serializers import RegionSerializer
+from .serializers import RegionSerializer, SubdivisionSerializer
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from .models import Trip, Vehicle
+from .models import Trip, Vehicle, Subdivision
 from .serializers import TripSerializer
 import pandas as pd
 #from statsmodels.tsa.statespace.sarimax import SARIMAX
@@ -24,6 +24,12 @@ class RegionListView(generics.ListAPIView):
 class RegionDetailView(generics.RetrieveAPIView):
     queryset = Region.objects.all()
     serializer_class = RegionSerializer
+
+
+class SubdivisionDetailView(generics.RetrieveAPIView):
+    queryset = Subdivision.objects.all()
+    serializer_class = SubdivisionSerializer
+
 
 class TripMileageForecast(APIView):
     def get(self, request, vehicle_id, format=None):
