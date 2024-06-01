@@ -3,12 +3,12 @@
         <div class="col-sm-2 height">
             <div class="item_list">
                 <div class="list_title">
-                    <div>Маршруты</div>
+                    <div>Структурные подразделения</div>
                 </div>
                 <div class="list_messages" v-if="lines">
                     <div v-for="(line, index) in lines" :key='index'>
                         <div class="item" @click="Mark_get(line.id)">
-                            <div>{{ line.title }}</div>
+                            <div>{{ line.name }}</div>
                             <img src="../assets/home.png" alt="" width="27px" height="27px">
                         </div>
                     </div>
@@ -59,6 +59,7 @@ import Chart from 'chart.js/auto';
 export default {
     data() {
         return {
+            lines: null,
             count: null,
             error_: null,
             not_error_: null,
@@ -98,6 +99,7 @@ export default {
     mounted() {
         axios.get(this.$globalUrl + 'api/regions/' + this.route.params.category_id + "/").then(response => {
             this.dialog = response.data;
+            this.lines = response.data.subdivisions;
             for (let i = 0; i < response.data.subdivisions.length; i++) {
                 this.subdivisions[response.data.subdivisions[i].name] = parseFloat(response.data.subdivisions[i].rating.substring(response.data.subdivisions[i].rating.length - 6, response.data.subdivisions[i].rating.length - 2));
                 this.in_structure[response.data.subdivisions[i].name] = 0;
