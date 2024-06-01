@@ -334,6 +334,10 @@ body {
   height: 100%;
   display: flex;
   flex-direction: column;
+  overflow: scroll;
+}
+.division_block_bottom{
+  height: 65svh;
 }
 
 .division_element {
@@ -344,6 +348,7 @@ body {
   border: 1px dashed black;
   margin-left: 15px;
   margin-right: 15px;
+  margin-top: 10px;
 }
 
 .division_element_text {
@@ -368,7 +373,9 @@ body {
   align-items: center;
   justify-content: center;
 }
-
+.regions{
+  margin-left: 10px;
+}
 .back_map {
   display: flex;
   justify-content: space-between;
@@ -423,3 +430,7 @@ progress::-moz-progress-bar {
 .title, .stat_item_prot{
   font-size: 15px;
 } 
+.stat_page{
+  margin-right: 20px;
+  margin-left: 20px;
+}

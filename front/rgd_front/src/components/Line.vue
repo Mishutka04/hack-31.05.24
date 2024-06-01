@@ -1,16 +1,6 @@
 <template>
-    <div class="row height">
-        <div class="col-sm-2">
-            <div class="item_list">
-                <div class="list_title">
-                    <div>Структурные подразделения</div>
-                </div>
-                <div class="list_messages" v-if="lines">
-
-                </div>
-            </div>
-        </div>
-        <div class="col-sm-10 height">
+    <div class="row height stat_page">
+        <div class="col-sm-12 height">
             <div class="row">
                 <div class="col stat_block left">
                     <div class="stat_block_up">Количество машин в структуре</div>
@@ -54,20 +44,15 @@
                     <div class="division_block">
                         <div class="division_title">Эффективность регионов</div>
                         <div class="line"></div>
-                        <div class="division_element">
-                        <div v-for="(line, index) in lines" :key='index'>
-                            <div class="item" @click="Mark_get(line.id)">
-                                <div>{{ line.name }}</div>
-                                <img src="../assets/home.png" alt="" width="27px" height="27px">
-                            </div>
-                        </div>
-                        </div>
-                        <div class="division_element">
+
+                        <div class="division_element" v-for="(line, index) in lines" :key='index'
+                            @click="Mark_get(line.id)">
                             <div class="image">
                                 <img src="../assets/graph.svg" alt="" width="100px" height="50px">
-                                <div class="regions">Приморье</div>
+                                <div class="regions">{{ line.name }}</div>
                             </div>
-                            <div class="division_element_text">Эффертивность 10%</div>
+                            <div class="division_element_text">Эффертивность {{ line.rating.substring(line.rating.length
+                                - 7, line.rating.length - 2) }}%</div>
                         </div>
 
                     </div>
@@ -96,12 +81,18 @@
                 <div class="col row_margin_top">
                     <div class="row graf_block">
                         <div class="col">
-                            <div class="graf_block_left">
-                                <div class="graf_block_title">Анализ структурного подразделения с рекомендациями</div>
+                            <div class="division_block  division_block_bottom">
+                                <div class="division_title">Анализ структурного подразделения с рекомендациями</div>
                                 <div class="line"></div>
-                                <div class="grafic">
-                                    <canvas id="myChart4ы"></canvas>
+
+                                <div class="division_element" v-for="(line, index) in lines" :key='index'
+                                    @click="Mark_get(line.id)">
+                                    <div class="image">
+                                        <img src="../assets/graph.svg" alt="" width="100px" height="50px">
+                                        <div class="regions">{{ line.name }} - {{ line.text_analysis }}</div>
+                                    </div>
                                 </div>
+
                             </div>
                         </div>
                         <div class="col ">
@@ -173,7 +164,7 @@ export default {
             this.dialog = response.data;
             this.lines = response.data.subdivisions;
             for (let i = 0; i < response.data.subdivisions.length; i++) {
-                this.subdivisions[response.data.subdivisions[i].name] = parseFloat(response.data.subdivisions[i].rating.substring(response.data.subdivisions[i].rating.length - 6, response.data.subdivisions[i].rating.length - 2));
+                this.subdivisions[response.data.subdivisions[i].name] = parseFloat(response.data.subdivisions[i].rating.substring(response.data.subdivisions[i].rating.length - 7, response.data.subdivisions[i].rating.length - 2));
                 this.in_structure[response.data.subdivisions[i].name] = 0;
                 if (!(response.data.subdivisions[i].name in this.error_subdivisions)) {
 
@@ -265,43 +256,48 @@ export default {
 
                     }),
                     new Chart(document.getElementById('myChart5'), {
-                        type: 'polarArea',
+                        type: 'bar',
                         data: {
                             labels: Object.keys(this.subdivisions),
                             datasets: [{
-                                label: 'Качество в %',
+                                label: 'Структурные подразделения',
                                 data: Object.values(this.subdivisions),
                                 backgroundColor: [
-                                    'rgb(255, 99, 132)',
-                                    'rgb(75, 192, 192)',
-                                    'rgb(255, 205, 86)',
-                                    'rgb(201, 203, 207)',
-                                    'rgb(54, 162, 235)'
-                                ]
-                            }]
+                                    'rgba(97, 94, 252, 0.8)',
+                                    'rgba(199, 56, 189, 0.8)',
+                                    'rgba(254, 122, 54, 0.8)',
+                                    'rgba(54, 82, 173, 0.8)',
+                                ],
 
+                                borderWidth: 3
+                            }]
                         },
 
                     }),
                     new Chart(document.getElementById('myChart6'), {
-                        type: 'polarArea',
+                        type: 'bar',
                         data: {
                             labels: Object.keys(this.error_subdivisions),
                             datasets: [{
-                                label: 'Количество нарушений',
+                                label: 'Структурные подразделения',
                                 data: Object.values(this.error_subdivisions),
                                 backgroundColor: [
-                                    'rgb(255, 99, 132)',
-                                    'rgb(75, 192, 192)',
-                                    'rgb(255, 205, 86)',
-                                    'rgb(201, 203, 207)',
-                                    'rgb(54, 162, 235)'
-                                ]
-                            }]
 
+                                    'rgba(97, 94, 252, 0.8)',
+                                    'rgba(199, 56, 189, 0.8)',
+                                    'rgba(254, 122, 54, 0.8)',
+                                    'rgba(54, 82, 173, 0.8)',
+                                    'rgba(54, 162, 235, 0.2)',
+                                    'rgba(153, 102, 255, 0.2)',
+                                    'rgba(201, 203, 207, 0.2)'
+                                ],
+
+                                borderWidth: 3
+                            }]
                         },
 
                     })
+
             }, 1000);
 
     },
