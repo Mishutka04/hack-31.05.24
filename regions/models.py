@@ -118,6 +118,11 @@ class Subdivision(models.Model):
         Region, on_delete=models.CASCADE,
         related_name='subdivisions',
         verbose_name='Регион')
+    text_analysis = models.TextField(
+        blank=True,
+        null=True,
+        verbose_name='Анализ структурного подразделения'
+        )
 
     def __str__(self):
         return self.name
@@ -127,36 +132,39 @@ class Subdivision(models.Model):
         verbose_name_plural = 'Структурные подразделения'
     
     def get_raiting(self, mid):
-        if 1-mid<0.05:
-            k=0.2
+        if 1-mid==0:
+            k=1
+        elif 1-mid<0.05:
+            k=0.8
         elif 1-mid<0.1:
-            k=0.3
+            k=0.7
         else:
-            k=0.4
+            k=0.6
         return k
     
     def get_raiting_fines(self, mid):
+        # print(mid)
         if mid==0:
             k=1
         elif mid<0.05:
-            k=0.1
+            k=0.9
         elif mid<0.15:
-            k=0.2
+            k=0.8
         else:
-            k=0.3
+            k=0.7
         return k
     
     def get_raiting_drive(self, mid):
         med_per = 100 - float(mid)/0.06
         # print(med_per)
-        if mid==0:
-            k=0
-        elif med_per<10:
-            k=0.1
-        elif mid<15:
-            k=0.2
-        else:
-            k=0.3
+        if med_per==0:
+            k=1
+        elif 0<med_per<10:
+            k=0.9
+        elif 15<med_per<20:
+            k=0.8
+        elif med_per>20:
+            k=0.7
         return k
 
     @property
@@ -195,10 +203,12 @@ class Subdivision(models.Model):
         # print(str(trip_k) + "_" + str(structure_k) + "_" + str(fines_k) + "_" + str(driving_k))
         
         # Р = П*0,4 + Ц*0,3 + Ш*0,15 + МВ*0,15
-        main_rate = (0.4 * trip_k + 0.3 * structure_k + 0.15 * fines_k + 0.15 * driving_k )* 100
+        main_rate = (0.4 * trip_k + 0.3 * structure_k + 0.15 * fines_k + 0.15 * driving_k)* 100
+        # print(str(main_rate)[:5])
         # main_rate_pircents = round(main_rate, 4) * 100
-        print("Рейтинг эффективности использования транспортных средств составляет - " + str(main_rate)[:5] + " %" )
-        return "Рейтинг эффективности использования транспортных средств составляет - " + str(main_rate)[:5] + " %" 
+        # print("Рейтинг эффективности использования транспортных средств составляет - " + str(main_rate)[:5] + " %" )
+        # return str(main_rate)[:5]
+        return "Рейтинг эффективности использования транспортных средств составляет - " + str(main_rate)[:5] + " %"
 
 class Vehicle(models.Model):
     number = models.CharField(

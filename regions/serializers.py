@@ -30,7 +30,7 @@ class SubdivisionSerializer(serializers.ModelSerializer):
         fields = [
             'id',
             'name',
-            # 'vehicles_count',
+            'text_analysis',
             'rating',
             'vehicles']
 
