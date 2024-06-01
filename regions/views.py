@@ -46,7 +46,6 @@ class TripMileageForecast(APIView):
         # Параметры модели ARIMA
         order = (1, 1, 1)
         df['trip_mileage'] = pd.to_numeric(df["trip_mileage"])
-        print(df['trip_mileage'])
         try:
             # Создание и обучение модели
             model = SARIMAX(df['trip_mileage'], order=order)
@@ -61,14 +60,14 @@ class TripMileageForecast(APIView):
             forecast_series = pd.Series(forecast.predicted_mean.values, index=forecast_index)
             
             # Построение графика прогнозируемых значений
-            plt.figure(figsize=(12, 6))
-            plt.plot(df['trip_mileage'], label='Наблюдаемые значения')
-            plt.plot(forecast_series, label='Прогноз', linestyle='--', color='red')
-            plt.xlabel('Дата', fontsize=12)
-            plt.ylabel('Пробег, км', fontsize=12)
-            plt.title('Прогноз пробега транспортных средств', fontsize=14)
-            plt.legend(fontsize=12)
-            plt.grid(True)
+            # plt.figure(figsize=(12, 6))
+            # plt.plot(df['trip_mileage'], label='Наблюдаемые значения')
+            # plt.plot(forecast_series, label='Прогноз', linestyle='--', color='red')
+            # plt.xlabel('Дата', fontsize=12)
+            # plt.ylabel('Пробег, км', fontsize=12)
+            # plt.title('Прогноз пробега транспортных средств', fontsize=14)
+            # plt.legend(fontsize=12)
+            # plt.grid(True)
             
             # # Сохранение графика в буфер
             # buffer = BytesIO()
@@ -78,19 +77,19 @@ class TripMileageForecast(APIView):
             # buffer.close()
             # image_base64 = base64.b64encode(image_png).decode('utf-8')
             # Сохранение графика
-            image_path = os.path.join(settings.MEDIA_ROOT, f'forecast_plot_{vehicle_id}.png')
-            plt.savefig(image_path, format='png')
-            plt.close()
+            # image_path = os.path.join(settings.MEDIA_ROOT, f'forecast_plot_{vehicle_id}.png')
+            # plt.savefig(image_path, format='png')
+            # plt.close()
 
             # Формирование URL для изображения
-            image_url = os.path.join(settings.MEDIA_URL, f'forecast_plot_{vehicle_id}.png')
+            # image_url = os.path.join(settings.MEDIA_URL, f'forecast_plot_{vehicle_id}.png')
 
             # Подготовка данных для ответа
             response_data = {
-                # "observed_values": df['trip_mileage'].to_dict(),
-                # "forecast_values": forecast_series.to_dict(),
+                "observed_values": df['trip_mileage'].to_dict().items(),
+                "forecast_values": forecast_series.to_dict().items(),
                 # "forecast_plot": image_base64
-                "forecast_plot_url": request.build_absolute_uri(image_url)
+                # "forecast_plot_url": request.build_absolute_uri(image_url)
             }
 
             return Response(response_data, status=status.HTTP_200_OK)
