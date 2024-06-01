@@ -46,7 +46,7 @@
                         <div class="line"></div>
 
                         <div class="division_element" v-for="(line, index) in lines" :key='index'
-                            @click="Mark_get(line.id)">
+                            @click="Item_get(line.id)">
                             <div class="image">
                                 <img src="../assets/train.svg" alt="" width="100px" height="50px">
                                 <div class="regions">{{ line.name }}</div>
@@ -86,7 +86,7 @@
                                 <div class="line"></div>
                                 <div class="division_items">
                                     <div class="division_element" v-for="(line, index) in lines" :key='index'
-                                        @click="Mark_get(line.id)">
+                                        @click="Item_get(line.id)">
                                         <div class="image">
                                             <img src="../assets/train2.svg" alt="" width="100px" height="50px">
                                             <div class="regions">{{ line.name }} - {{ line.text_analysis }}</div>
@@ -151,14 +151,11 @@ export default {
     setup() {
         const router = useRouter();
         const route = useRoute();
-        function Mark_get(id) {
-            router.push('/route/' + id);
-        };
         function Item_get(id) {
-            router.push('/route/' + route.params.category_id + '/chat/' + id);
+            router.push('/region/' + route.params.category_id + '/division/' + id);
         };
         return {
-            Mark_get, Item_get, route
+            Item_get, route
         }
     },
     mounted() {

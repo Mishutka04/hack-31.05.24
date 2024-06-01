@@ -9,7 +9,7 @@ export default createRouter({
     routes: [
         {name: 'base', path: '', component: Google},
         {name: 'region', path: '/region/:category_id/', component: Line},
-        {name: 'car', path: '/region/:category_id/:car_id/', component: Base},
+        {name: 'division', path: '/region/:category_id/division/:division_id/', component: Base},
         
     ]
 })

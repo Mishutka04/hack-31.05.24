@@ -197,6 +197,10 @@ body {
   margin-right: 20px;
 
 }
+.icon img{
+  width: 10svh;
+  height: 10svh;
+}
 
 .stat {
   height: 50%;
@@ -262,7 +266,12 @@ body {
   border-radius: 5px;
   height: 100%;
 }
-
+.stat_block{
+  height: 17svh;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
 .graf_block_left {
 
   margin-right: 10px;
@@ -305,9 +314,11 @@ body {
   align-items: center;
   justify-content: center;
   border-radius: 20px;
-  width: 20%;
   background: rgba(216, 14, 14, 0.212);
-  height: 80%;
+  padding-right: 10px;
+  padding-left: 10px;
+  padding-top: 5px;
+  padding-bottom: 5px;
 }
 
 .stat_block_up,
@@ -332,7 +343,13 @@ body {
   
 }
 .division_block_bottom{
-  height: 65svh;
+  height: 60svh;
+}
+.division_block_bottom3{
+  height: 30svh;
+}
+.division_block_bottom2{
+  height: 40svh;
 }
 
 .division_element {
@@ -346,7 +363,7 @@ body {
   margin-top: 10px;
   
 }
-.division_items{
+.division_items, .division_list{
   height: 100%;
   overflow: scroll;
 }
@@ -483,4 +500,8 @@ progress::-moz-progress-bar {
 }
 .item_color_text{
   margin-left: 5px;
+}
+
+.up_stat_block{
+  height: 20svh;
 }
