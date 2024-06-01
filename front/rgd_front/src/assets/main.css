@@ -198,11 +198,6 @@ body {
 
 }
 
-.right {
-  background-color: rgb(173, 189, 34);
-}
-
-
 .stat {
   height: 50%;
 }
@@ -249,7 +244,7 @@ body {
   margin-top: 20px;
   display: flex;
   justify-content: center;
-  height: 100%;
+
   width: 100%;
   position: relative;
 }
@@ -273,19 +268,18 @@ body {
   margin-right: 10px;
 }
 
-.graf_block_right {
-  margin-right: 35px;
-}
 
 .left {
   margin-left: 15px;
   margin-right: 20px;
 }
 
-.right {
-  margin-right: 35px;
+.right, .right_element {
+  margin-right: 15px;
 }
-
+.row_margin_top{
+  margin-bottom: 15px;
+}
 .center {
   margin-right: 20px;
 }
@@ -298,10 +292,11 @@ body {
 }
 
 .stat_block_down {
-
+  
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+  align-items: center;
   text-align: center;
 }
 
@@ -334,7 +329,7 @@ body {
   height: 100%;
   display: flex;
   flex-direction: column;
-  overflow: scroll;
+  
 }
 .division_block_bottom{
   height: 65svh;
@@ -349,8 +344,12 @@ body {
   margin-left: 15px;
   margin-right: 15px;
   margin-top: 10px;
+  
 }
-
+.division_items{
+  height: 100%;
+  overflow: scroll;
+}
 .division_element_text {
   margin-right: 15px;
   display: flex;
@@ -450,6 +449,7 @@ progress::-moz-progress-bar {
   width: 15px;
   background-color: #1a7a0c;
   display: flex;
+  border: solid #333 1px;
 
 }
 .item_yellow{
@@ -457,6 +457,7 @@ progress::-moz-progress-bar {
   width: 15px;
   background-color: #feec1e;
   display: flex;
+  border: solid #333 1px;
 
 }
 .item_red{
@@ -464,6 +465,7 @@ progress::-moz-progress-bar {
   width: 15px;
   background-color: #c50c09;
   display: flex;
+  border: solid #333 1px;
 
 }
 
@@ -471,6 +473,7 @@ progress::-moz-progress-bar {
   height: 15px;
   width: 15px;
   background-color: #337AB7;
+  border: solid #333 1px;
   display: flex;
 
 }

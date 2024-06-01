@@ -1,6 +1,6 @@
 <template>
-    <div class="row height stat_page">
-        <div class="col-sm-12 height">
+    <div class="row height stat_page" v-if="error_subdivisions">
+        <div class="col-12 height">
             <div class="row">
                 <div class="col stat_block left">
                     <div class="stat_block_up">Количество машин в структуре</div>
@@ -57,8 +57,8 @@
 
                     </div>
                 </div>
-                <div class="col-8">
-                    <div class="row graf_block">
+                <div class="col-8 ">
+                    <div class="row graf_block ">
                         <div class="col graf_block_left">
                             <div class="graf_block_title">График эффективности подразделений</div>
                             <div class="line"></div>
@@ -66,7 +66,7 @@
                                 <canvas id="myChart5"></canvas>
                             </div>
                         </div>
-                        <div class="col graf_block_right">
+                        <div class="col graf_block_right right_element">
                             <div class="graf_block_title">График количества нарушений подразделений</div>
                             <div class="line"></div>
                             <div class="grafic">
@@ -77,14 +77,14 @@
 
                 </div>
             </div>
-            <div class="row div_block">
-                <div class="col row_margin_top">
-                    <div class="row graf_block">
-                        <div class="col">
+            <div class="row">
+                <div class="col-12 row_margin_top right_col row_margin_bottom">
+                    <div class="row">
+                        <div class="col-6">
                             <div class="division_block  division_block_bottom">
                                 <div class="division_title">Анализ структурного подразделения с рекомендациями</div>
                                 <div class="line"></div>
-
+                                <div class="division_items">
                                 <div class="division_element" v-for="(line, index) in lines" :key='index'
                                     @click="Mark_get(line.id)">
                                     <div class="image">
@@ -92,11 +92,12 @@
                                         <div class="regions">{{ line.name }} - {{ line.text_analysis }}</div>
                                     </div>
                                 </div>
+                            </div>
 
                             </div>
                         </div>
-                        <div class="col ">
-                            <div class="graf_block_right">
+                        <div class="col-6">
+                            <div class="graf_block_right division_block_bottom">
                                 <div class="graf_block_title">График количества нарушений подразделений</div>
                                 <div class="line"></div>
                                 <div class="grafic">
