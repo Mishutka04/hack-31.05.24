@@ -1,4 +1,5 @@
 from django.db import models
+import decimal
 
 class Region(models.Model):
     REGION_CHOICES = [
@@ -125,10 +126,79 @@ class Subdivision(models.Model):
         verbose_name = 'Структурное подразделение'
         verbose_name_plural = 'Структурные подразделения'
     
+    def get_raiting(self, mid):
+        if 1-mid<0.05:
+            k=0.2
+        elif 1-mid<0.1:
+            k=0.3
+        else:
+            k=0.4
+        return k
+    
+    def get_raiting_fines(self, mid):
+        if mid==0:
+            k=1
+        elif mid<0.05:
+            k=0.1
+        elif mid<0.15:
+            k=0.2
+        else:
+            k=0.3
+        return k
+    
+    def get_raiting_drive(self, mid):
+        med_per = 100 - float(mid)/0.06
+        # print(med_per)
+        if mid==0:
+            k=0
+        elif med_per<10:
+            k=0.1
+        elif mid<15:
+            k=0.2
+        else:
+            k=0.3
+        return k
+
     @property
-    def vehicles_count(self):
+    def rating(self):
         vehicles = self.vehicles.all()
-        return len(vehicles)
+        true_trip=0
+        tele_trip=0
+        vehicle_in_structure=0
+        count_fines=0
+        driving_rate=0
+        for vehicle in vehicles:
+            true_trip+=vehicle.all_telematics_mileage
+            tele_trip+=vehicle.all_true_telematics_mileage
+            count_fines+=vehicle.all_fines
+            driving_rate+=vehicle.driving_style
+            if vehicle.in_structure is True:
+                vehicle_in_structure+=1
+
+        try:
+            trip_mid = true_trip/tele_trip
+            if trip_mid>1:
+                trip_mid = tele_trip/true_trip
+        except (decimal.DivisionByZero, decimal.InvalidOperation):
+            trip_mid=0
+        trip_k = self.get_raiting(trip_mid)
+
+        structure_mid=vehicle_in_structure/len(vehicles)
+        structure_k = self.get_raiting(structure_mid)
+        
+        fines_mid=len(vehicles)/count_fines
+        fines_k=self.get_raiting_fines(fines_mid)
+        
+        driving_mid=driving_rate/len(vehicles)
+        driving_k=self.get_raiting_drive(driving_mid)
+
+        # print(str(trip_k) + "_" + str(structure_k) + "_" + str(fines_k) + "_" + str(driving_k))
+        
+        # Р = П*0,4 + Ц*0,3 + Ш*0,15 + МВ*0,15
+        main_rate = (0.4 * trip_k + 0.3 * structure_k + 0.15 * fines_k + 0.15 * driving_k )* 100
+        # main_rate_pircents = round(main_rate, 4) * 100
+        print("Рейтинг эффективности использования транспортных средств составляет - " + str(main_rate)[:5] + " %" )
+        return "Рейтинг эффективности использования транспортных средств составляет - " + str(main_rate)[:5] + " %" 
 
 class Vehicle(models.Model):
     number = models.CharField(
@@ -150,7 +220,13 @@ class Vehicle(models.Model):
     all_telematics_mileage = models.DecimalField(
         max_digits=10,
         decimal_places=2,
-        verbose_name='Данные телематики, пробег')
+        verbose_name='Пробег по путевым листам')
+    all_true_telematics_mileage = models.DecimalField(
+        max_digits=10,
+        decimal_places=2,
+        blank=True,
+        null=True,
+        verbose_name='Пробег по телеметрике')
     in_structure = models.BooleanField(
         default=False,
         verbose_name='В структуре парка'

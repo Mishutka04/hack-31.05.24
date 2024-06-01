@@ -182,7 +182,7 @@ typings/
 # /templates
 
 # uploads
-# /uploads
+/uploads
 
 ya copy.xml
 

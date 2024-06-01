@@ -18,6 +18,8 @@ transformers = "*"
 chronos = {git = "git+https://github.com/amazon-science/chronos-forecasting.git"}
 pandas = "*"
 openpyxl = "*"
+matplotlib = "*"
+statsmodels = "*"
 
 [dev-packages]
 
