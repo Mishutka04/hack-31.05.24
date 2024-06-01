@@ -434,3 +434,50 @@ progress::-moz-progress-bar {
   margin-right: 20px;
   margin-left: 20px;
 }
+.item_color{
+  display: flex;
+  align-items: center;
+  height: 20px;
+  margin-right: 10px;
+  margin-left: 15px;
+}
+.item_color_title{
+  font-size: 30px;
+  margin-left: 15px;
+}
+.item_green{
+  height: 15px;
+  width: 15px;
+  background-color: #1a7a0c;
+  display: flex;
+
+}
+.item_yellow{
+  height: 15px;
+  width: 15px;
+  background-color: #feec1e;
+  display: flex;
+
+}
+.item_red{
+  height: 15px;
+  width: 15px;
+  background-color: #c50c09;
+  display: flex;
+
+}
+
+.item_no_item{
+  height: 15px;
+  width: 15px;
+  background-color: #337AB7;
+  display: flex;
+
+}
+
+.item_color_list{
+  display: flex;
+}
+.item_color_text{
+  margin-left: 5px;
+}

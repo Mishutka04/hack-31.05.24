@@ -5,7 +5,7 @@
                 <div class="col stat_block left">
                     <div class="stat_block_up">Количество машин в структуре</div>
                     <div class="stat_block_down">
-                        <div class="image"><img src="../assets/graph.svg" alt="" width="100px" height="50px"></div>
+                        <div class="image"><img src="../assets/car_2.svg" alt="" width="100px" height="100px"></div>
                         <div class="stat_block_item">
                             <div class="text">{{ sum_car(Object.values(this.in_structure)) }}</div>
                         </div>
@@ -14,7 +14,7 @@
                 <div class="col stat_block center">
                     <div class="stat_block_up">Количество машин не эксплуатируемых</div>
                     <div class="stat_block_down">
-                        <div class="image"><img src="../assets/graph.svg" alt="" width="100px" height="50px"></div>
+                        <div class="image"><img src="../assets/car_1.svg" alt="" width="100px" height="100px"></div>
                         <div class="stat_block_item">
                             <div class="text">{{ this.error_exploitation }}</div>
                         </div>
@@ -23,18 +23,18 @@
                 <div class="col stat_block center">
                     <div class="stat_block_up">Нарушений в листах по датам</div>
                     <div class="stat_block_down">
-                        <div class="image"><img src="../assets/graph.svg" alt="" width="100px" height="50px"></div>
+                        <div class="image"><img src="../assets/calendar.svg" alt="" width="100px" height="100px"></div>
                         <div class="stat_block_item">
                             <div class="text">{{ this.error_date }}</div>
                         </div>
                     </div>
                 </div>
                 <div class="col stat_block right">
-                    <div class="stat_block_up">Название</div>
+                    <div class="stat_block_up">Общий рейтинг управления ЖД</div>
                     <div class="stat_block_down">
-                        <div class="image"><img src="../assets/graph.svg" alt="" width="100px" height="50px"></div>
+                        <div class="image"><img src="../assets/raiting.svg" alt="" width="100px" height="100px"></div>
                         <div class="stat_block_item">
-                            <div class="text">10 %</div>
+                            <div class="text">68 %</div>
                         </div>
                     </div>
                 </div>
@@ -48,7 +48,7 @@
                         <div class="division_element" v-for="(line, index) in lines" :key='index'
                             @click="Mark_get(line.id)">
                             <div class="image">
-                                <img src="../assets/graph.svg" alt="" width="100px" height="50px">
+                                <img src="../assets/train.svg" alt="" width="100px" height="50px">
                                 <div class="regions">{{ line.name }}</div>
                             </div>
                             <div class="division_element_text">Эффертивность {{ line.rating.substring(line.rating.length
@@ -88,7 +88,7 @@
                                 <div class="division_element" v-for="(line, index) in lines" :key='index'
                                     @click="Mark_get(line.id)">
                                     <div class="image">
-                                        <img src="../assets/graph.svg" alt="" width="100px" height="50px">
+                                        <img src="../assets/train2.svg" alt="" width="100px" height="50px">
                                         <div class="regions">{{ line.name }} - {{ line.text_analysis }}</div>
                                     </div>
                                 </div>
@@ -230,7 +230,7 @@ export default {
                     data: {
                         labels: Object.keys(this.date),
                         datasets: [{
-                            label: 'My First Dataset',
+                            label: 'Количество несоотвествий / Дата',
                             data: Object.values(this.date),
                             fill: false,
                             borderColor: 'rgb(75, 192, 192)',
