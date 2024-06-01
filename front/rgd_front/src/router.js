@@ -8,8 +8,8 @@ export default createRouter({
     history: createWebHashHistory(),
     routes: [
         {name: 'base', path: '', component: Google},
-        {name: 'line', path: '/route/:category_id/', component: Line},
-        {name: 'google', path: '/google/', component: Google},
+        {name: 'region', path: '/region/:category_id/', component: Line},
+        {name: 'car', path: '/region/:category_id/:car_id/', component: Base},
         
     ]
 })

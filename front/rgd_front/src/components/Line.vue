@@ -85,14 +85,14 @@
                                 <div class="division_title">Анализ структурного подразделения с рекомендациями</div>
                                 <div class="line"></div>
                                 <div class="division_items">
-                                <div class="division_element" v-for="(line, index) in lines" :key='index'
-                                    @click="Mark_get(line.id)">
-                                    <div class="image">
-                                        <img src="../assets/train2.svg" alt="" width="100px" height="50px">
-                                        <div class="regions">{{ line.name }} - {{ line.text_analysis }}</div>
+                                    <div class="division_element" v-for="(line, index) in lines" :key='index'
+                                        @click="Mark_get(line.id)">
+                                        <div class="image">
+                                            <img src="../assets/train2.svg" alt="" width="100px" height="50px">
+                                            <div class="regions">{{ line.name }} - {{ line.text_analysis }}</div>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
 
                             </div>
                         </div>
@@ -136,6 +136,7 @@ export default {
             error_mileage: null,
             error_date: null,
             error_exploitation: 0,
+            is_ready: null,
         }
     }, methods: {
         sum_car(arr) {
@@ -223,9 +224,6 @@ export default {
         }),
 
             setTimeout(() => {
-
-
-
                 new Chart(document.getElementById('myChart3'), {
                     type: 'line',
                     data: {
@@ -239,23 +237,7 @@ export default {
                         }]
 
                     },
-
                 }),
-                    new Chart(document.getElementById('myChart4'), {
-                        type: 'scatter',
-                        data: {
-                            labels: Object.keys(this.date),
-                            datasets: [{
-                                type: 'bar',
-                                label: 'Bar Dataset',
-                                data: Object.values(this.date),
-                                borderColor: 'rgb(255, 99, 132)',
-                                backgroundColor: 'rgba(255, 99, 132, 0.2)'
-                            }]
-
-                        },
-
-                    }),
                     new Chart(document.getElementById('myChart5'), {
                         type: 'bar',
                         data: {
@@ -300,6 +282,7 @@ export default {
                     })
 
             }, 1000);
+        this.is_ready = true;
 
     },
 

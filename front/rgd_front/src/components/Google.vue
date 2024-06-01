@@ -489,7 +489,7 @@ export default {
 
         function Mark_get(id) {
             if (id) {
-                router.push('/route/' + id);
+                router.push('/region/' + id);
             }
         };
         return {
@@ -539,9 +539,8 @@ export default {
 
 .rf-map {
     position: relative;
-    margin: auto;
     padding: 20px;
-    height: 100%
+    height: 85%;
 }
 
 .rf-map .district b {
