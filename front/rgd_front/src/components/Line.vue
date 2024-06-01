@@ -6,12 +6,7 @@
                     <div>Структурные подразделения</div>
                 </div>
                 <div class="list_messages" v-if="lines">
-                    <div v-for="(line, index) in lines" :key='index'>
-                        <div class="item" @click="Mark_get(line.id)">
-                            <div>{{ line.name }}</div>
-                            <img src="../assets/home.png" alt="" width="27px" height="27px">
-                        </div>
-                    </div>
+
                 </div>
             </div>
         </div>
@@ -59,6 +54,14 @@
                     <div class="division_block">
                         <div class="division_title">Эффективность регионов</div>
                         <div class="line"></div>
+                        <div class="division_element">
+                        <div v-for="(line, index) in lines" :key='index'>
+                            <div class="item" @click="Mark_get(line.id)">
+                                <div>{{ line.name }}</div>
+                                <img src="../assets/home.png" alt="" width="27px" height="27px">
+                            </div>
+                        </div>
+                        </div>
                         <div class="division_element">
                             <div class="image">
                                 <img src="../assets/graph.svg" alt="" width="100px" height="50px">
@@ -115,7 +118,7 @@
                 </div>
             </div>
 
-            
+
         </div>
     </div>
 </template>
@@ -230,22 +233,22 @@ export default {
             setTimeout(() => {
 
 
-                
-                    new Chart(document.getElementById('myChart3'), {
-                        type: 'line',
-                        data: {
-                            labels: Object.keys(this.date),
-                            datasets: [{
-                                label: 'My First Dataset',
-                                data: Object.values(this.date),
-                                fill: false,
-                                borderColor: 'rgb(75, 192, 192)',
-                                tension: 0.1
-                            }]
 
-                        },
+                new Chart(document.getElementById('myChart3'), {
+                    type: 'line',
+                    data: {
+                        labels: Object.keys(this.date),
+                        datasets: [{
+                            label: 'My First Dataset',
+                            data: Object.values(this.date),
+                            fill: false,
+                            borderColor: 'rgb(75, 192, 192)',
+                            tension: 0.1
+                        }]
 
-                    }),
+                    },
+
+                }),
                     new Chart(document.getElementById('myChart4'), {
                         type: 'scatter',
                         data: {
