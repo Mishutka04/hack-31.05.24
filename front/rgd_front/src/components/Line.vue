@@ -18,9 +18,16 @@
         <div class="col-sm-10 height">
             <div class="result">
                 <div class="stat_title">Результат</div>
-                <div class="stat_item">Качество переговоров - <b>{{ this.sr_count }} %</b></div>
-                <div class="stat_item">Качество нарушений - <b>{{ this.count_not_accept }}</b></div>
-                <div class="stat_item">Качество переговоров без нарушений - <b>{{ this.count_accept }}</b></div>
+                <div class="stat_item">Количество машин в структуре - <b>{{ sum_car(Object.values(this.in_structure))
+                        }}</b></div>
+                <div>
+                    <div v-for="(sub, index) in in_structure" :key='index'>
+                        <div class="stat_item"><b>{{ index }}</b> - {{ sub }}</div>
+                    </div>
+                </div>
+
+                <div class="stat_item">Количество машин не эксплуатируемых - <b>{{ this.error_exploitation }}</b></div>
+                <div class="stat_item">Нарушений в дате - <b>{{ this.error_date }}</b></div>
                 <div class="grafic">
                     <canvas id="myChart"></canvas>
                 </div>
@@ -32,6 +39,12 @@
                 </div>
                 <div class="grafic">
                     <canvas id="myChart4"></canvas>
+                </div>
+                <div class="grafic">
+                    <canvas id="myChart5"></canvas>
+                </div>
+                <div class="grafic">
+                    <canvas id="myChart6"></canvas>
                 </div>
             </div>
         </div>
@@ -51,9 +64,24 @@ export default {
             not_error_: null,
             date: {
 
+            },
+            subdivisions: {},
+            error_subdivisions: {},
+            in_structure: {},
+            error_mileage: null,
+            error_date: null,
+            error_exploitation: 0,
+        }
+    }, methods: {
+        sum_car(arr) {
+            let count = 0;
+            for (let i = 0; i < arr.length; i++) {
+                count += arr[i]
             }
+            return count
         }
     },
+
     setup() {
         const router = useRouter();
         const route = useRoute();
@@ -71,33 +99,65 @@ export default {
         axios.get(this.$globalUrl + 'api/regions/' + this.route.params.category_id + "/").then(response => {
             this.dialog = response.data;
             for (let i = 0; i < response.data.subdivisions.length; i++) {
+                this.subdivisions[response.data.subdivisions[i].name] = parseFloat(response.data.subdivisions[i].rating.substring(response.data.subdivisions[i].rating.length - 6, response.data.subdivisions[i].rating.length - 2));
+                this.in_structure[response.data.subdivisions[i].name] = 0;
+                if (!(response.data.subdivisions[i].name in this.error_subdivisions)) {
+
+                    this.error_subdivisions[response.data.subdivisions[i].name] = 1;
+                }
                 for (let j = 0; j < response.data.subdivisions[i].vehicles.length; j++) {
+
+                    if ((response.data.subdivisions[i].vehicles[j].all_telematics_mileage == response.data.subdivisions[i].vehicles[j].all_true_telematics_mileage) && (Number(response.data.subdivisions[i].vehicles[j].all_true_telematics_mileage) == 0)) {
+                        this.error_exploitation += 1;
+                    };
+
                     for (let k = 0; k < response.data.subdivisions[i].vehicles[j].trips.length; k++) {
+                        if (response.data.subdivisions[i].vehicles[j].in_structure) {
+                            this.in_structure[response.data.subdivisions[i].name] += 1;
+                        };
+
+
                         if (response.data.subdivisions[i].vehicles[j].trips[k].trip_mileage == response.data.subdivisions[i].vehicles[j].trips[k].telematics_mileage) {
                             this.not_error_ += 1;
 
                         } else {
                             this.error_ += 1;
                             if (response.data.subdivisions[i].vehicles[j].trips[k].trip_date in this.date) {
-                                let s =
-                                    this.date[response.data.subdivisions[i].vehicles[j].trips[k].trip_date] += 1;
+                                console.log(1)
+                                this.date[response.data.subdivisions[i].vehicles[j].trips[k].trip_date] += 1;
+                                this.error_subdivisions[response.data.subdivisions[i].name] += 1;
                             } else {
-                                console.log(response.data.subdivisions[i].vehicles[j].trips[k].trip_date)
-                                this.date[response.data.subdivisions[i].vehicles[j].trips[k].trip_date] = 1;
+                                if (!response.data.subdivisions[i].vehicles[j].trips[k].trip_date) {
+                                    if (response.data.subdivisions[i].vehicles[j].trips[k].telematics_date) {
+                                        if (response.data.subdivisions[i].vehicles[j].trips[k].telematics_date in this.date) {
+                                            this.date[response.data.subdivisions[i].vehicles[j].trips[k].telematics_date] += 1;
+
+                                        } else {
+                                            this.date[response.data.subdivisions[i].vehicles[j].trips[k].telematics_date] = 1;
+                                        }
+                                    }
+
+                                } else {
+                                    this.date[response.data.subdivisions[i].vehicles[j].trips[k].trip_date] = 1;
+                                }
+
                             }
+                        };
+                        if ((!response.data.subdivisions[i].vehicles[j].trips[k].trip_date) || (!response.data.subdivisions[i].vehicles[j].trips[k].telematics_date)) {
+                            this.error_date += 1;
+
                         }
-
-
 
                     }
                 }
 
             }
-            console.log(Object.keys(this.date), Object.values(this.date))
+
 
         }),
 
             setTimeout(() => {
+
 
                 new Chart(document.getElementById('myChart'), {
                     type: 'pie',
@@ -183,6 +243,32 @@ export default {
                                 data: Object.values(this.date),
                                 borderColor: 'rgb(255, 99, 132)',
                                 backgroundColor: 'rgba(255, 99, 132, 0.2)'
+                            }]
+
+                        },
+
+                    }),
+                    new Chart(document.getElementById('myChart5'), {
+                        type: 'polarArea',
+                        data: {
+                            labels: Object.keys(this.subdivisions),
+                            datasets: [{
+                                label: 'Качество в %',
+                                data: Object.values(this.subdivisions),
+
+                            }]
+
+                        },
+
+                    }),
+                    new Chart(document.getElementById('myChart6'), {
+                        type: 'polarArea',
+                        data: {
+                            labels: Object.keys(this.error_subdivisions),
+                            datasets: [{
+                                label: 'Количество нарушений',
+                                data: Object.values(this.error_subdivisions),
+
                             }]
 
                         },
