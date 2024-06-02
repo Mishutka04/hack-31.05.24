@@ -113,6 +113,10 @@
 
         </div>
     </div>
+    <div class="search" v-else>
+        <img src="../assets/search_train.gif" alt="" width="60%" height="60%">
+        <div class="search_text">Загрузка данных</div>
+    </div>
 </template>
 
 <script>
