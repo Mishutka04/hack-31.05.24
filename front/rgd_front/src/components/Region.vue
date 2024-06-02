@@ -42,7 +42,7 @@
             <div class="row">
                 <div class="col-4 ">
                     <div class="division_block">
-                        <div class="division_title">Эффективность регионов</div>
+                        <div class="division_title">Эффективность подразделений</div>
                         <div class="line"></div>
 
                         <div class="division_element" v-for="(line, index) in lines" :key='index'
