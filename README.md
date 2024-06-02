@@ -70,7 +70,7 @@ X (eXogenous): Внешние регрессоры, дополнительные
 
 <h2 align="left">Видеопрезентация проекта</h2>
 
-[![Видеопрезентация нашего проекта](https://i.postimg.cc/wxPGJdWW/2024-06-01-22-13-42.png)](https://drive.google.com/file/d/1DKBtGFUIZ5qr787ZVQIo6GrjsGjGsBOn/view?usp=drive_link)
+[![Видеопрезентация нашего проекта](https://i.postimg.cc/SQ8Fdrn7/2024-06-02-05-55-28.png)](https://drive.google.com/file/d/1I9I_QA6rVmppv5XHvSp4kd-eZpXOhqje/view)
 ## Работа с Backend приложением
 
 Установка зависимостей
